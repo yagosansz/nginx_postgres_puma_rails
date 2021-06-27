@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  web:
+    image: nginx
+    build:
+      context: .
+      dockerfile: ./nginx/Dockerfile      
+    ports:
+      - "80:80"
+    depends_on:
+      - app
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+  app:
+    build: .
+    volumes:
+      - ./rails_app:/rails_app
+    env_file:
+      - .env      
+    depends_on:
+      - db      
